@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.6.2 <0.8.0;
+pragma solidity >=0.7.0 <0.8.0;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/utils/Address.sol";
@@ -19,31 +19,12 @@ contract erc20_swap_contract {
 
     mapping(bytes32 => Swap) swaps;
     
-    // event for EVM logging
-    // TODO
-
-    modifier isNotInitiated(uint refundTimeInBlocks, bytes32 hashedSecret, address participant) {
+    function initiate(uint refundTimeInBlocks, bytes32 hashedSecret, address participant, address contractAddress, uint256 value) public
+    {
         require(swaps[hashedSecret].refundTimeInBlocks == 0, "swap for this hash is already initiated");
         require(participant != address(0), "invalid participant address");
         require(block.number < refundTimeInBlocks, "refundTimeInBlocks has already come");
-        _;
-    }
 
-    modifier isRefundable(bytes32 hashedSecret) {
-        require(block.number >= swaps[hashedSecret].refundTimeInBlocks);
-        require(msg.sender == swaps[hashedSecret].initiator);
-        _;
-    }
-    
-    modifier isRedeemable(bytes32 hashedSecret, bytes32 secret) {
-        require(msg.sender == swaps[hashedSecret].participant, "invalid msg.sender");
-        require(sha256(abi.encodePacked(secret)) == hashedSecret, "invalid secret");
-        _;
-    }
-    
-    function initiate(uint refundTimeInBlocks, bytes32 hashedSecret, address participant, address contractAddress, uint256 value) public
-        isNotInitiated(refundTimeInBlocks, hashedSecret, participant)
-    {
         swaps[hashedSecret].refundTimeInBlocks = refundTimeInBlocks;
         swaps[hashedSecret].contractAddress = contractAddress;
         swaps[hashedSecret].participant = participant;
@@ -54,8 +35,10 @@ contract erc20_swap_contract {
     }
     
     function redeem(bytes32 secret, bytes32 hashedSecret) public
-        isRedeemable(hashedSecret, secret)
     {
+        require(msg.sender == swaps[hashedSecret].participant, "invalid msg.sender");
+        require(sha256(abi.encodePacked(secret)) == hashedSecret, "invalid secret");
+
         Swap memory tmp = swaps[hashedSecret];
         delete swaps[hashedSecret];
 
@@ -63,8 +46,10 @@ contract erc20_swap_contract {
     }
 
     function refund(bytes32 hashedSecret) public
-        isRefundable(hashedSecret) 
     {
+        require(block.number >= swaps[hashedSecret].refundTimeInBlocks);
+        require(msg.sender == swaps[hashedSecret].initiator, "invalid msg.sender");
+        
         Swap memory tmp = swaps[hashedSecret];
         delete swaps[hashedSecret];
 
