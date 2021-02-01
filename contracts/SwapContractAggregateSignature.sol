@@ -34,7 +34,8 @@ contract SwapContractAggregateSignature {
         bytes32 hash = keccak256(abi.encodePacked(addressFromSecret, swaps[addressFromSecret].participant, swaps[addressFromSecret].initiator, swaps[addressFromSecret].refundTimeInBlocks));
 
         // If the signature is valid (and not malleable), return the signer address
-        address signer = ECDSA.recover(hash, abi.encodePacked(r, s, v));
+        bytes32 ethSignedMessageHash = ECDSA.toEthSignedMessageHash(hash);
+        address signer = ECDSA.recover(ethSignedMessageHash,  abi.encodePacked(r, s, v));
 
         require(signer == addressFromSecret, "invalid address");
 
