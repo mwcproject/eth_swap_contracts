@@ -1,7 +1,7 @@
-var erc20_swap_contract_aggregate_signature = artifacts.require("../contracts/erc20_swap_contract_aggregate_signature.sol");
-var swap_contract_aggregate_signature = artifacts.require("../contracts/swap_contract_aggregate_signature.sol");
+var ERC20SwapContractAggregateSignature = artifacts.require("../contracts/ERC20SwapContractAggregateSignature.sol");
+var SwapContractAggregateSignature = artifacts.require("../contracts/SwapContractAggregateSignature.sol");
 
-module.exports = function(_deployer) {
-  _deployer.deploy(erc20_swap_contract_aggregate_signature);
-  _deployer.deploy(swap_contract_aggregate_signature);
+module.exports = function(deployer) {
+  deployer.deploy(ERC20SwapContractAggregateSignature);
+  deployer.deploy(SwapContractAggregateSignature);
 };
