@@ -20,6 +20,9 @@
 require('dotenv').config();
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
+const Web3 = require("web3");
+const web3 = new Web3();
+
 module.exports = {
   networks: {
     "ganache": {
@@ -28,10 +31,14 @@ module.exports = {
      },
     ropsten: {
       provider: () => new HDWalletProvider(process.env.MNEMONIC_ROPSTEN, `https://ropsten.infura.io/v3/${process.env.INFURA_TOKEN}`),
+      gasPrice: web3.utils.toWei('2', 'gwei'),
+      gas: 5500000,
       network_id: 3
     },
     mainnet: {
       provider: () => new HDWalletProvider(process.env.MNEMONIC_MAINNET, `https://mainnet.infura.io/v3/${process.env.INFURA_TOKEN}`),
+      gasPrice: web3.utils.toWei('150', 'gwei'),
+      gas: 5500000,
       network_id: 1
     }
   },
