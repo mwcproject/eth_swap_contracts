@@ -16,6 +16,7 @@
     "dotenv": "8.2.0",
     "openzeppelin-solidity": "3.3.0",
     "truffle": "^5.1.65",
-    "truffle-hdwallet-provider": "1.0.17"
+    "truffle-hdwallet-provider": "1.0.17",
+    "truffle-plugin-verify": "^0.5.4"
   }
 }
