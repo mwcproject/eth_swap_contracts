@@ -31,15 +31,17 @@ module.exports = {
      },
     ropsten: {
       provider: () => new HDWalletProvider(process.env.MNEMONIC_ROPSTEN, `https://ropsten.infura.io/v3/${process.env.INFURA_TOKEN}`),
-      gasPrice: web3.utils.toWei('2', 'gwei'),
+      gasPrice: web3.utils.toWei('50', 'gwei'),
       gas: 5500000,
-      network_id: 3
+      network_id: 3,
+      networkCheckTimeout: 200000
     },
     mainnet: {
       provider: () => new HDWalletProvider(process.env.MNEMONIC_MAINNET, `https://mainnet.infura.io/v3/${process.env.INFURA_TOKEN}`),
       gasPrice: web3.utils.toWei('150', 'gwei'),
       gas: 5500000,
-      network_id: 1
+      network_id: 1,
+      networkCheckTimeout: 200000
     }
   },
 
